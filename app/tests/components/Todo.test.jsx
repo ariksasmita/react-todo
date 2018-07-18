@@ -10,5 +10,19 @@ describe('Todo', () => {
   it("should exist", () => {
     expect(Todo).toExist()
   })
+
+  it('should call onToggleItem', () => {
+    var todoData = {
+      id: 12,
+      text: 'Test Item',
+      completed: true,
+    }
+    var spy = expect.createSpy()
+    var todo = TestUtils.renderIntoDocument(<Todo onToggle={ spy } { ...todoData }/>)
+    var $el = $(ReactDOM.findDOMNode(todo))
+
+    TestUtils.Simulate.click($el[0])
+    expect(spy).toHaveBeenCalledWith(12)
+  })
 })
 

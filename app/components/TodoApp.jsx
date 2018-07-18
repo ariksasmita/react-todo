@@ -14,18 +14,22 @@ var TodoApp = React.createClass({
         {
           id: uuid(),
           text: 'Walk the dog',
+          completed: false,
         },
         {
           id: uuid(),
           text: 'Clean the yard',
+          completed: true,
         },
         {
           id: uuid(),
           text: 'Make the bed',
+          completed: true,
         },
         {
           id: uuid(),
           text: 'Feed yourself',
+          completed: false,
         },
       ],
     }
@@ -37,6 +41,7 @@ var TodoApp = React.createClass({
         {
           id: uuid(),
           text,
+          completed: false,
         }
       ]
     })
@@ -47,13 +52,24 @@ var TodoApp = React.createClass({
       searchText: searchText.toLowerCase(),
     })
   },
+  handleToggle: function(id) {
+    var updatedTodos = this.state.todos.map((todo) => {
+      if (todo.id === id){
+        todo.completed = !todo.completed
+      }
+      return todo
+    })
+    this.setState({
+      todos: updatedTodos,
+    })
+  },
   render: function() {
     var { todos } = this.state
     return (
       <div>
         Todo App
         <TodoSearch onSearch={ this.handleSearch } />
-        <TodoList todos={ todos } />
+        <TodoList onToggle={ this.handleToggle } todos={ todos } />
         <AddTodo onAddTodo={ this.handleAddTodo } />
       </div>
     )
