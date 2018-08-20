@@ -1,5 +1,6 @@
 var React = require('react')
 var uuid = require('node-uuid')
+var moment = require('moment')
 
 var TodoAPI = require('TodoAPI')
 
@@ -26,6 +27,8 @@ var TodoApp = React.createClass({
           id: uuid(),
           text,
           completed: false,
+          createdAt: moment().unix(),
+          completedAt: undefined,
         }
       ]
     })
@@ -40,6 +43,7 @@ var TodoApp = React.createClass({
     var updatedTodos = this.state.todos.map((todo) => {
       if (todo.id === id){
         todo.completed = !todo.completed
+        todo.completedAt = todo.completed ? moment().unix() : undefined
       }
       return todo
     })
@@ -48,12 +52,12 @@ var TodoApp = React.createClass({
     })
   },
   render: function() {
-    var { todos } = this.state
+    var { todos, showCompleted, searchText } = this.state
+    var filteredTodos = TodoAPI.filterTodos(todos, showCompleted, searchText)
     return (
       <div>
-        Todo App
         <TodoSearch onSearch={ this.handleSearch } />
-        <TodoList onToggle={ this.handleToggle } todos={ todos } />
+        <TodoList onToggle={ this.handleToggle } todos={ filteredTodos } />
         <AddTodo onAddTodo={ this.handleAddTodo } />
       </div>
     )

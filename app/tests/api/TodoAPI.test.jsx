@@ -6,10 +6,14 @@ var TodoAPI = require('TodoAPI')
 var todos = [{
   id: 1,
   text: 'test 1',
-  completed: false,
+  completed: true,
 },{
   id: 2,
   text: 'test 2',
+  completed: false,
+},{
+  id: 3,
+  text: 'some longer todo',
   completed: true,
 }]
 
@@ -44,6 +48,33 @@ describe('TodoAPI', () => {
       localStorage.setItem('todos', JSON.stringify(todos))
       var actualTodos = TodoAPI.getTodos()
       expect(actualTodos).toEqual(todos)
+    })
+  })
+
+  describe('filterTodos', () => {
+    it('should return all items if showCompleted true', () => {
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '')
+      expect(filteredTodos.length).toBe(3)
+    })
+    it('should return only uncompleted items if showCompleted false', () => {
+      var filteredTodos = TodoAPI.filterTodos(todos, false, '')
+      expect(filteredTodos.length).toBe(1)
+    })
+    it('should sort todos based on completed status, uncompleted wil come first', () => {
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '')
+      expect(filteredTodos[0].completed).toBe(false)
+    })
+    it('should return all todos based on empty search text', () => {
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '')
+      expect(filteredTodos.length).toBe(3)
+    })
+    it('should return todos based on valid search text', () => {
+      var filteredTodos = TodoAPI.filterTodos(todos, true, 'some')
+      expect(filteredTodos.length).toBe(1)
+    })
+    it('should not return todos based on invalid search text', () => {
+      var filteredTodos = TodoAPI.filterTodos(todos, true, 'dog')
+      expect(filteredTodos.length).toBe(0)
     })
   })
 })
